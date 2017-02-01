@@ -1,0 +1,3 @@
+#!/bin/bash
+export PATH=./go/bin:$PATH
+export GOPATH=`pwd`
