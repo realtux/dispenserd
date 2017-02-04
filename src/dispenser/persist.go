@@ -1,13 +1,13 @@
 package main
 
 import (
-	"fmt"
-	"time"
+    "fmt"
+    "time"
 )
 
 func Persist() {
-	for {
-		fmt.Println("replace with sync code")
-		time.Sleep(time.Second)
-	}
+    for {
+        fmt.Println("replace with sync code")
+        time.Sleep(time.Second)
+    }
 }
