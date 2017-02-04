@@ -1,6 +1,8 @@
 .idea/
 bin/*
 !bin/.gitkeep
+logs/*
+!logs/.gitkeep
 pkg/*
 !pkg/.gitkeep
 go/*

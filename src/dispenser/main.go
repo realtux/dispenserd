@@ -12,6 +12,8 @@ func main() {
     // handle service endpoints
     http.HandleFunc("/", ServiceStatus)
     http.HandleFunc("/schedule", ServiceSchedule)
+    http.HandleFunc("/receive_block", ServiceReceiveBlock)
+    http.HandleFunc("/receive_noblock", ServiceReceiveNoBlock)
 
     fmt.Println("server started on port", 8282)
 

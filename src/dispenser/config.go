@@ -34,7 +34,7 @@ func ConfigLoad() {
     ju_err := json.Unmarshal(data, &config)
 
     if ju_err != nil {
-        fmt.Println("error parsing config.json")
+        fmt.Println("error parsing config.json, likely invalid json")
         os.Exit(1)
     }
 

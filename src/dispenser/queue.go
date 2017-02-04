@@ -6,3 +6,5 @@ type job struct {
 }
 
 var queue []job
+
+var idle_workers = 0
