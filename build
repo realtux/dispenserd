@@ -1,0 +1,16 @@
+#!/bin/bash
+
+VERSION="0.0.1"
+
+echo
+echo "dispenser version $VERSION by: b"
+echo 'building dispenser...'
+go build  -o bin/dispenser dispenser
+echo 'dispenser built!'
+echo 'run in foreground: ./bin/dispenser'
+echo 'run in background: ./bin/dispenser > /dev/null 2>&1 &'
+echo
+
+if [[ $* == *--and-run* ]]; then
+    ./bin/dispenser
+fi
