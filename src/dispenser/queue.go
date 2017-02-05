@@ -1,10 +1,82 @@
 package main
 
+import (
+    "crypto/sha1"
+    "fmt"
+    "io"
+    "math/rand"
+    "sort"
+    "strconv"
+    "time"
+)
+
 type job struct {
-    Priority int    `json:"priority"`
-    Message  string `json:"message"`
+    JobNum    int    `json:"job_num"`
+    Hash      string `json:"hash"`
+    Timestamp string `json:"timestamp"`
+    Priority  int    `json:"priority"`
+    Message   string `json:"message"`
 }
 
-var queue []job
+type job_set []job
+
+var queue = job_set{}
+
+func (a job_set) Len() int      { return len(a) }
+func (a job_set) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a job_set) Less(i, j int) bool {
+    if a[i].Priority < a[j].Priority {
+        return true
+    }
+    if a[i].Priority > a[j].Priority {
+        return false
+    }
+    return a[i].JobNum < a[j].JobNum
+}
 
 var idle_workers = 0
+var total_jobs = 0
+
+func InitJob() job {
+    mu.Lock()
+    total_jobs += 1
+    job_num := total_jobs
+    mu.Unlock()
+
+    rand_number := rand.Intn(999999999)
+    timestamp := time.Now().Format(time.RFC3339)
+
+    hash := sha1.New()
+    io.WriteString(hash, strconv.Itoa(rand_number)+timestamp)
+
+    return job{
+        JobNum:    job_num,
+        Hash:      fmt.Sprintf("%x", hash.Sum(nil)),
+        Timestamp: timestamp,
+        Priority:  JOB_DEFAULT_PRIORITY,
+        Message:   "",
+    }
+}
+
+func InitJobTemplate() job {
+    return job{
+        JobNum:    0,
+        Hash:      "",
+        Timestamp: "",
+        Priority:  0,
+        Message:   "",
+    }
+}
+
+func InsertJob(job job) {
+    mu.Lock()
+
+    queue = append(queue, job)
+
+    sort.Sort(job_set(queue))
+
+    if idle_workers > 0 {
+        ready <- 1
+    }
+    mu.Unlock()
+}

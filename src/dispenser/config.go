@@ -24,7 +24,7 @@ var config = init_options()
 
 func ConfigLoad() {
     // read config
-    data, err := ioutil.ReadFile("config/config.json")
+    data, err := ioutil.ReadFile(ROOT + "/config/config.json")
 
     if err != nil {
         fmt.Println("could not open config.json, perhaps it doesn't exist?")

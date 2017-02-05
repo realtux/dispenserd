@@ -6,13 +6,16 @@ import (
     "net/http"
     "os"
     "runtime"
-    "sync"
     "time"
 )
 
-var mu sync.Mutex
-
 var ready = make(chan int)
+
+type generic_payload struct {
+    Status  string `json:"status"`
+    Code    int    `json:"code"`
+    Message string `json:"message,omitempty"`
+}
 
 func ServiceStatus(res http.ResponseWriter, req *http.Request) {
     res.Header().Set("Content-Type", "application/json")
@@ -25,7 +28,7 @@ func ServiceStatus(res http.ResponseWriter, req *http.Request) {
 
     type stats struct {
         IdleWorkers int `json:"idle_workers"`
-        QueuedJobs int `json:"queued_jobs"`
+        QueuedJobs  int `json:"queued_jobs"`
     }
 
     type payload struct {
@@ -49,7 +52,7 @@ func ServiceStatus(res http.ResponseWriter, req *http.Request) {
         Payload: payload{
             Stats: stats{
                 IdleWorkers: idle_workers,
-                QueuedJobs: len(queue),
+                QueuedJobs:  len(queue),
             },
             System: system{
                 Pid:      os.Getpid(),
@@ -65,21 +68,49 @@ func ServiceStatus(res http.ResponseWriter, req *http.Request) {
 
 func ServiceSchedule(res http.ResponseWriter, req *http.Request) {
     res.Header().Set("Content-Type", "application/json")
-    res.WriteHeader(http.StatusOK)
 
-    mu.Lock()
-
-    incoming_job := job{}
+    incoming_job := InitJobTemplate()
     incoming_message := json.NewDecoder(req.Body)
     incoming_message.Decode(&incoming_job)
 
-    queue = append(queue, incoming_job)
+    if incoming_job.Message == "" {
+        payload := generic_payload{
+            Status:  STATUS_ERROR,
+            Code:    CODE_INVALID_DATA,
+            Message: "missing message",
+        }
 
-    if idle_workers > 0 {
-        ready <- 1
+        json_response, _ := json.MarshalIndent(payload, "", "  ")
+
+        res.WriteHeader(http.StatusBadRequest)
+        res.Write(json_response)
+        return
     }
 
-    mu.Unlock()
+    final_job := InitJob()
+    final_job.Message = incoming_job.Message
+    final_job.Priority = incoming_job.Priority
+
+    InsertJob(final_job)
+
+    payload := generic_payload{
+        Status: STATUS_OK,
+        Code:   CODE_SUCCESS,
+    }
+
+    json_response, _ := json.MarshalIndent(payload, "", "  ")
+
+    res.WriteHeader(http.StatusBadRequest)
+    res.Write(json_response)
+}
+
+func ServiceJobs(res http.ResponseWriter, req *http.Request) {
+    res.Header().Set("Content-Type", "application/json")
+    res.WriteHeader(http.StatusOK)
+
+    json_response, _ := json.MarshalIndent(queue, "", "  ")
+
+    res.Write(json_response)
 }
 
 func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {

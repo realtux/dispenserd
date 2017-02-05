@@ -1,7 +1,14 @@
 package main
 
-const NAME = "dispenser"
-const VERSION = "0.0.1"
+const (
+    NAME    = "dispenser"
+    VERSION = "0.0.1"
 
-const STATUS_OK = "ok"
-const STATUS_ERROR = "error"
+    STATUS_OK    = "ok"
+    STATUS_ERROR = "error"
+
+    CODE_SUCCESS      = 0
+    CODE_INVALID_DATA = 1
+
+    JOB_DEFAULT_PRIORITY = 512
+)

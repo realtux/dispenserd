@@ -1,16 +1,27 @@
 #!/bin/bash
 
+ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+echo 'in:' $ROOT
+
 VERSION="0.0.1"
 
 echo
 echo "dispenser version $VERSION by: b"
 echo 'building dispenser...'
-go build  -o bin/dispenser dispenser
-echo 'dispenser built!'
-echo 'run in foreground: ./bin/dispenser'
-echo 'run in background: ./bin/dispenser > /dev/null 2>&1 &'
-echo
 
-if [[ $* == *--and-run* ]]; then
-    ./bin/dispenser
+GOPATH=$ROOT go build -o $ROOT/dispenser dispenser
+
+if [[ $? == 0 ]]; then
+    echo 'dispenser built!'
+    echo "run in foreground: $ROOT/dispenser"
+    echo "run in background: $ROOT/dispenser > /dev/null 2>&1 &"
+    echo
+
+    if [[ $* == *--and-run* ]]; then
+        $ROOT/dispenser
+    fi
+else
+    echo 'build failed'
+    echo
 fi
