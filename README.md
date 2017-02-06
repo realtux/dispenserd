@@ -5,7 +5,7 @@ Dispenser is a modern job queue designed to be: fast, reliable, feature rich, an
 
 ### Primary Features
 - No compromise on speed or reliability
-- Full control via a JSON API
+- Simple JSON interface
 - Queue fully in memory with optional persistence
 - Blocking Operation (receive a job immediately or block until ready)
-- Non-blocking Operation (receive a job immeidately or be notified none are available)
+- Non-blocking Operation (receive a job immediately or be notified none are available)

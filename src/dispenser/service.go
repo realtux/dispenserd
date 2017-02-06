@@ -2,7 +2,6 @@ package main
 
 import (
     "encoding/json"
-    "fmt"
     "net/http"
     "os"
     "runtime"
@@ -100,7 +99,7 @@ func ServiceSchedule(res http.ResponseWriter, req *http.Request) {
 
     json_response, _ := json.MarshalIndent(payload, "", "  ")
 
-    res.WriteHeader(http.StatusBadRequest)
+    res.WriteHeader(http.StatusOK)
     res.Write(json_response)
 }
 
@@ -116,39 +115,50 @@ func ServiceJobs(res http.ResponseWriter, req *http.Request) {
 func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
     mu.Lock()
 
+    send_job := func() {
+        // take the next job off the front
+        next_job := queue[0]
+        if len(queue) == 1 {
+            queue = job_set{}
+        } else {
+            queue = queue[1:]
+        }
+        mu.Unlock()
+
+        res.Header().Set("Content-Type", "text/plain")
+        res.WriteHeader(http.StatusOK)
+        res.Write([]byte(next_job.Message))
+    }
+
     if len(queue) == 0 {
         idle_workers += 1
         mu.Unlock()
 
         cn, _ := res.(http.CloseNotifier)
 
-        select {
-        case <-ready:
-            mu.Lock()
-            idle_workers -= 1
-            mu.Unlock()
-        case <-cn.CloseNotify():
-            fmt.Println("client hung up")
+        for {
+            select {
+            case <-ready:
+                mu.Lock()
+                if len(queue) == 0 {
+                    mu.Unlock()
+                    continue
+                }
+                idle_workers -= 1
+                send_job()
+                return
+            case <-cn.CloseNotify():
+                mu.Lock()
+                idle_workers -= 1
+                mu.Unlock()
 
-            mu.Lock()
-            idle_workers -= 1
-            mu.Unlock()
-
-            return
+                return
+            }
         }
     } else {
-        mu.Unlock()
+        send_job()
+        return
     }
-
-    // take the next job off the front
-    mu.Lock()
-    next_job := queue[0]
-    queue = queue[1:]
-    mu.Unlock()
-
-    res.Header().Set("Content-Type", "text/plain")
-    res.WriteHeader(http.StatusOK)
-    res.Write([]byte(next_job.Message))
 }
 
 func ServiceReceiveNoBlock(res http.ResponseWriter, req *http.Request) {

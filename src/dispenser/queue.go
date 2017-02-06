@@ -11,16 +11,18 @@ import (
 )
 
 type job struct {
-    JobNum    int    `json:"job_num"`
+    JobNum    uint64 `json:"job_num"`
     Hash      string `json:"hash"`
     Timestamp string `json:"timestamp"`
-    Priority  int    `json:"priority"`
+    Priority  uint   `json:"priority"`
     Message   string `json:"message"`
 }
 
 type job_set []job
 
 var queue = job_set{}
+var idle_workers = 0
+var total_jobs uint64 = 0
 
 func (a job_set) Len() int      { return len(a) }
 func (a job_set) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
@@ -34,13 +36,10 @@ func (a job_set) Less(i, j int) bool {
     return a[i].JobNum < a[j].JobNum
 }
 
-var idle_workers = 0
-var total_jobs = 0
-
 func InitJob() job {
     mu.Lock()
     total_jobs += 1
-    job_num := total_jobs
+    var job_num uint64 = total_jobs
     mu.Unlock()
 
     rand_number := rand.Intn(999999999)
@@ -78,5 +77,6 @@ func InsertJob(job job) {
     if idle_workers > 0 {
         ready <- 1
     }
+
     mu.Unlock()
 }
