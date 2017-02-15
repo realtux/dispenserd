@@ -11,11 +11,11 @@ import (
 )
 
 type job struct {
-    JobNum    uint64 `json:"job_num"`
-    Hash      string `json:"hash"`
-    Timestamp string `json:"timestamp"`
-    Priority  uint   `json:"priority"`
-    Message   string `json:"message"`
+    JobNum    uint64  `json:"job_num"`
+    Hash      string  `json:"hash"`
+    Timestamp string  `json:"timestamp"`
+    Priority  uint    `json:"priority"`
+    Message   *string `json:"message"`
 }
 
 type job_set []job
@@ -53,7 +53,7 @@ func InitJob() job {
         Hash:      fmt.Sprintf("%x", hash.Sum(nil)),
         Timestamp: timestamp,
         Priority:  JOB_DEFAULT_PRIORITY,
-        Message:   "",
+        Message:   nil,
     }
 }
 
@@ -63,7 +63,7 @@ func InitJobTemplate() job {
         Hash:      "",
         Timestamp: "",
         Priority:  0,
-        Message:   "",
+        Message:   nil,
     }
 }
 
@@ -72,11 +72,18 @@ func InsertJob(job job) {
 
     queue = append(queue, job)
 
-    sort.Sort(job_set(queue))
+    // this kills perf, consider replacing with periodic sort
+    SortQueue()
 
     if idle_workers > 0 {
         ready <- 1
     }
 
     mu.Unlock()
+}
+
+func SortQueue() {
+    //mu.Lock()
+    sort.Sort(job_set(queue))
+    //mu.Unlock()
 }

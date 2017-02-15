@@ -3,5 +3,6 @@
 #for i in {1..50000}; do
 while true; do
     RAND=( $RANDOM % 2500 + 1 )
-    curl http://127.0.0.1:8282/schedule -d "{\"priority\": $RAND, \"message\": \"$RAND test\"}"
+    #curl http://127.0.0.1:8282/schedule -d "{\"priority\": $RAND, \"message\": \"$RAND test\"}"
+    curl http://127.0.0.1:8282/schedule -d "{\"priority\": 1, \"message\": \"1 test\"}"
 done

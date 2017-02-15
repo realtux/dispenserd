@@ -72,7 +72,7 @@ func ServiceSchedule(res http.ResponseWriter, req *http.Request) {
     incoming_message := json.NewDecoder(req.Body)
     incoming_message.Decode(&incoming_job)
 
-    if incoming_job.Message == "" {
+    if incoming_job.Message == nil {
         payload := generic_payload{
             Status:  STATUS_ERROR,
             Code:    CODE_INVALID_DATA,
@@ -127,7 +127,7 @@ func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
 
         res.Header().Set("Content-Type", "text/plain")
         res.WriteHeader(http.StatusOK)
-        res.Write([]byte(next_job.Message))
+        res.Write([]byte(*next_job.Message))
     }
 
     if len(queue) == 0 {
@@ -181,5 +181,5 @@ func ServiceReceiveNoBlock(res http.ResponseWriter, req *http.Request) {
 
     res.Header().Set("Content-Type", "text/plain")
     res.WriteHeader(http.StatusOK)
-    res.Write([]byte(next_job.Message))
+    res.Write([]byte(*next_job.Message))
 }

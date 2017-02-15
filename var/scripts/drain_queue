@@ -1,6 +1,6 @@
 #!/bin/bash
 
 while true; do
-    curl http://10.0.0.113:8282/receive_block
+    curl http://127.0.0.1:8282/receive_block
     echo
 done
