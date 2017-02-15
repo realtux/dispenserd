@@ -11,6 +11,7 @@ Dispenser is a modern job queue designed to be: fast, reliable, feature rich, an
 - Non-blocking Operation (receive a job immediately or be notified none are available)
 
 ### API Reference
+---
 
 #### Status: `/`
 ##### Request Body
@@ -37,6 +38,8 @@ empty
 }
 ```
 
+---
+
 #### List Jobs: `/jobs`
 ##### Request Body
 ```
@@ -58,6 +61,8 @@ empty
   }
 ]
 ```
+
+---
 
 #### Schedule Job: `/schedule`
 ##### Request Body
@@ -83,6 +88,8 @@ empty
 }
 ```
 
+---
+
 #### Receive Job (blocking): `/receive_block`
 ##### Request Body
 ```
@@ -96,6 +103,8 @@ since this is a blocking response, the request will simply hang until a job is r
 ```json
 plain text job
 ```
+
+---
 
 #### Receive Job (non-blocking): `/receive_noblock`
 ##### Request Body
