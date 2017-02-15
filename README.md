@@ -58,3 +58,59 @@ empty
   }
 ]
 ```
+
+#### Schedule Job: `/schedule`
+##### Request Body
+```json
+{
+    "priority": 1,
+    "message": "msg here. stringified json, serialized objects, etc..."
+}
+```
+##### Response Body (valid request)
+```json
+{
+  "status": "ok",
+  "code": 0
+}
+```
+##### Response Body (invalid request)
+```json
+{
+  "status": "error",
+  "code": 1,
+  "message": "missing message"
+}
+```
+
+#### Receive Job (blocking): `/receive_block`
+##### Request Body
+```
+empty
+```
+##### Response Body (no job ready)
+```
+since this is a blocking response, the request will simply hang until a job is ready
+```
+##### Response Body (job ready)
+```json
+plain text job
+```
+
+#### Receive Job (non-blocking): `/receive_noblock`
+##### Request Body
+```
+empty
+```
+##### Response Body (no job ready)
+```json
+{
+  "status": "ok",
+  "code": 0,
+  "message": "empty queue"
+}
+```
+##### Response Body (job ready)
+```json
+plain text job
+```

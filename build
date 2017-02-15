@@ -2,8 +2,6 @@
 
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-echo 'in:' $ROOT
-
 VERSION="0.0.1"
 
 echo
