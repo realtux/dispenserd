@@ -168,9 +168,17 @@ func ServiceReceiveNoBlock(res http.ResponseWriter, req *http.Request) {
         mu.Unlock()
 
         // nothing in queue means return immediately
-        res.Header().Set("Content-Type", "text/plain")
+        payload := generic_payload{
+            Status:  STATUS_OK,
+            Code:    CODE_SUCCESS,
+            Message: "empty queue",
+        }
+
+        json_response, _ := json.MarshalIndent(payload, "", "  ")
+
+        res.Header().Set("Content-Type", "application/json")
         res.WriteHeader(http.StatusOK)
-        res.Write([]byte(`nothing ready`))
+        res.Write(json_response)
         return
     }
 
