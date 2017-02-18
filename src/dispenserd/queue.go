@@ -14,7 +14,7 @@ type job struct {
     JobNum    uint64  `json:"job_num"`
     Hash      string  `json:"hash"`
     Timestamp string  `json:"timestamp"`
-    Priority  uint    `json:"priority"`
+    Priority  *uint    `json:"priority"`
     Message   *string `json:"message"`
 }
 
@@ -27,10 +27,10 @@ var total_jobs uint64 = 0
 func (a job_set) Len() int      { return len(a) }
 func (a job_set) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
 func (a job_set) Less(i, j int) bool {
-    if a[i].Priority < a[j].Priority {
+    if *a[i].Priority < *a[j].Priority {
         return true
     }
-    if a[i].Priority > a[j].Priority {
+    if *a[i].Priority > *a[j].Priority {
         return false
     }
     return a[i].JobNum < a[j].JobNum
@@ -48,11 +48,13 @@ func InitJob() job {
     hash := sha1.New()
     io.WriteString(hash, strconv.Itoa(rand_number)+timestamp)
 
+    var default_priority uint = JOB_DEFAULT_PRIORITY
+
     return job{
         JobNum:    job_num,
         Hash:      fmt.Sprintf("%x", hash.Sum(nil)),
         Timestamp: timestamp,
-        Priority:  JOB_DEFAULT_PRIORITY,
+        Priority:  &default_priority,
         Message:   nil,
     }
 }
@@ -62,7 +64,7 @@ func InitJobTemplate() job {
         JobNum:    0,
         Hash:      "",
         Timestamp: "",
-        Priority:  0,
+        Priority:  nil,
         Message:   nil,
     }
 }

@@ -87,8 +87,14 @@ func ServiceSchedule(res http.ResponseWriter, req *http.Request) {
     }
 
     final_job := InitJob()
-    final_job.Message = incoming_job.Message
-    final_job.Priority = incoming_job.Priority
+
+    if incoming_job.Message != nil {
+        final_job.Message = incoming_job.Message
+    }
+
+    if incoming_job.Priority != nil {
+        final_job.Priority = incoming_job.Priority
+    }
 
     InsertJob(final_job)
 
