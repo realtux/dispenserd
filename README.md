@@ -1,7 +1,7 @@
-# dispenser
+# dispenserd
 Modern Job Queue for Modern Developers
 
-Dispenser is a modern job queue designed to be: fast, reliable, feature rich, and tailored towards the needs of developers.
+Dispenserd is a modern job queue designed to be: fast, reliable, feature rich, and tailored towards the needs of developers.
 
 ### Primary Features
 - No compromise on stability or reliability
@@ -24,10 +24,10 @@ cd dispenser
 ./build
 
 # run in foreground
-./dispenser
+./dispenserd
 
 # run in background
-./dispenser -d
+./dispenserd -d
 ```
 
 ---
@@ -43,7 +43,7 @@ empty
 ##### Response Body
 ```json
 {
-  "name": "dispenser",
+  "name": "dispenserd",
   "version": "0.0.1",
   "timestamp": "2017-02-05T23:42:51-06:00",
   "status": "ok",

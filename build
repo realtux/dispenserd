@@ -5,19 +5,22 @@ ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 VERSION="0.0.1"
 
 echo
-echo "dispenser version $VERSION by: b"
-echo 'building dispenser...'
+echo "dispenserd version $VERSION by: b"
+echo 'building dispenserd...'
 
-GOPATH=$ROOT go build -o $ROOT/bin/dispenser dispenser
+GOPATH=$ROOT go build -o $ROOT/bin/dispenserd dispenserd
 
 if [[ $? == 0 ]]; then
+    touch $ROOT/config/queue.json
+    touch $ROOT/logs/dispenserd.log
+    
     echo 'dispenser built!'
-    echo "run in foreground: $ROOT/dispenser"
-    echo "run in background: $ROOT/dispenser -d"
+    echo "run in foreground: $ROOT/dispenserd"
+    echo "run in background: $ROOT/dispenserd -d"
     echo
 
        if [[ $* == *--and-run* ]]; then
-           $ROOT/dispenser
+           $ROOT/dispenserd
        fi
 else
     echo 'build failed'

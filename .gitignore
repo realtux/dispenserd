@@ -5,5 +5,5 @@
 !/logs/.gitkeep
 /pkg/*
 !/pkg/.gitkeep
-/dispenser
+/dispenserd
 /config/queue.json

@@ -1,7 +1,7 @@
 package main
 
 const (
-    NAME    = "dispenser"
+    NAME    = "dispenserd"
     VERSION = "0.0.1"
 
     STATUS_OK    = "ok"
