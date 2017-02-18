@@ -33,6 +33,16 @@ cd dispenser
 ./dispenserd -d
 ```
 
+##### CentOS/RHEL package
+```
+coming soon
+```
+
+##### Ubuntu package
+```
+coming soon
+```
+
 ---
 
 ### API Reference
