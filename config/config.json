@@ -1,4 +1,4 @@
 {
-    "persist_queue": false,
-    "persist_interval": 60
+    "persist_queue": true,
+    "persist_interval": 1800
 }

@@ -39,6 +39,7 @@ func ConfigLoad() {
     }
 
     if config.PersistQueue {
+        LoadQueue()
         go Persist()
     }
 }

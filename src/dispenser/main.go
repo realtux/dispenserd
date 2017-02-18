@@ -5,7 +5,6 @@ import (
     "net/http"
     "os"
     "os/signal"
-    "path/filepath"
     "sync"
     "syscall"
 )
@@ -13,15 +12,26 @@ import (
 var mu = &sync.Mutex{}
 var ROOT string
 
+var running = true
+
 func cleanup() {
+    running = false
+
     fmt.Println("cleaning up...")
+
     if config.PersistQueue {
         fmt.Println("queue persistence enabled, saving queue...")
+        WriteQueue()
     }
 }
 
 func main() {
-    ROOT, _ = filepath.Abs(filepath.Dir(os.Args[0]))
+    ROOT = os.Getenv("ROOT")
+
+    if ROOT == "" {
+        fmt.Println("root unset")
+        os.Exit(1)
+    }
 
     // init config
     ConfigLoad()

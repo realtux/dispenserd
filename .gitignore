@@ -6,3 +6,4 @@
 /pkg/*
 !/pkg/.gitkeep
 /dispenser
+/config/queue.json

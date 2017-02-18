@@ -8,17 +8,17 @@ echo
 echo "dispenser version $VERSION by: b"
 echo 'building dispenser...'
 
-GOPATH=$ROOT go build -o $ROOT/dispenser dispenser
+GOPATH=$ROOT go build -o $ROOT/bin/dispenser dispenser
 
 if [[ $? == 0 ]]; then
     echo 'dispenser built!'
     echo "run in foreground: $ROOT/dispenser"
-    echo "run in background: $ROOT/dispenser > /dev/null 2>&1 &"
+    echo "run in background: $ROOT/dispenser -d"
     echo
 
-    if [[ $* == *--and-run* ]]; then
-        $ROOT/dispenser
-    fi
+       if [[ $* == *--and-run* ]]; then
+           $ROOT/dispenser
+       fi
 else
     echo 'build failed'
     echo
