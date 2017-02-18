@@ -11,10 +11,13 @@ Dispenserd is a modern job queue designed to be: fast, reliable, feature rich, a
 - Non-blocking Operation (receive a job immediately or be notified none are available)
 - Job priorities
 
+### Dependencies
+- Golang 1.6+
+
 ### Installation
 ---
 
-##### Run from source folder
+##### Run from source folder (Linux/macOS)
 ```
 # get the code
 git clone https://github.com/ebrian/dispenser
