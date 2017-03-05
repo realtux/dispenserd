@@ -1,7 +1,8 @@
 language: go
 go:
     - 1.7.x
-
+sudo: required
+install:
+    - sudo pip install requests
 script:
-    - pip install requests
     - ./run_tests
