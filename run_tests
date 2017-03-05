@@ -1,7 +1,16 @@
 #!/bin/bash
 
+# build dispenserd
+./build
+
+# start dispenserd in the background
+./dispenserd -d
+
 # give dispenserd a chance to start
-sleep 5
+sleep 1
 
 # start tests here
-python -V
+python tests/test.py
+
+# kill dispenserd
+pidof dispenserd | xargs kill -15
