@@ -3,4 +3,6 @@ go:
     - 1.7.x
 
 script:
+    - ./build
+    - ./dispenser -d
     - ./run_tests

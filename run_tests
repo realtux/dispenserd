@@ -1,9 +1,6 @@
 #!/bin/bash
 
-# start dispenserd in the background
-./dispenserd -d
-
-# wait a little bit
+# give dispenserd a chance to start
 sleep 5
 
 # start tests here
