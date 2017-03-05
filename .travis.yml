@@ -3,4 +3,5 @@ go:
     - 1.7.x
 
 script:
+    - pip install requests
     - ./run_tests
