@@ -7,9 +7,13 @@
 ./dispenserd -d
 
 # give dispenserd a chance to start
+echo ''
+echo 'sleeping 1 second'
 sleep 1
 
 # start tests here
+echo ''
+echo 'starting tests...'
 python tests/test.py
 
 # kill dispenserd

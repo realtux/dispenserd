@@ -1,26 +1,17 @@
 import unittest
 import requests
 
-class TestStringMethods(unittest.TestCase):
+class TestDispenserd(unittest.TestCase):
 
-    def test_health(self):
-        res = requests.get('http://127.0.0.1:8282/')
+    def test_is_running(self):
+        res = requests.get('http://127.0.0.1:8282/').json()
 
-        print res.json()
+        self.assertEqual(res['status'], 'ok')
 
-    #def test_upper(self):
-    #    self.assertEqual('foo'.upper(), 'FOO')
+    def test_queue_is_empty(self):
+        res = requests.get('http://127.0.0.1:8282/jobs').json()
 
-    #def test_isupper(self):
-    #    self.assertTrue('FOO'.isupper())
-    #    self.assertFalse('Foo'.isupper())
+        self.assertEqual(len(res), 0)
 
-    #def test_split(self):
-    #    s = 'hello world'
-    #    self.assertEqual(s.split(), ['hello', 'world'])
-        # check that s.split fails when the separator is not a string
-    #    with self.assertRaises(TypeError):
-    #        s.split(2)
-
-if __name__ == '__main__':
-    unittest.main()
+suite = unittest.TestLoader().loadTestsFromTestCase(TestDispenserd)
+unittest.TextTestRunner(verbosity=2).run(suite)
