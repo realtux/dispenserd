@@ -1,3 +1,10 @@
 #!/bin/bash
 
-echo 'test'
+# start dispenserd in the background
+./dispenserd -d
+
+# wait a little bit
+sleep 5
+
+# start tests here
+python -V
