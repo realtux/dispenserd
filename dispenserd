@@ -1,0 +1,21 @@
+#!/bin/bash
+
+ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+VERSION="0.0.1"
+
+echo
+echo "dispenserd version $VERSION by: b"
+echo 'starting dispenserd...'
+
+if [[ ! -f $ROOT/bin/dispenserd ]]; then
+    echo "build dispenserd first: $ROOT/build"
+else
+    if [[ $* == *-d* ]]; then
+        echo 'starting dispenserd in background...'
+        ROOT=$ROOT nohup $ROOT/bin/dispenserd > /dev/null 2>&1 &
+    else
+        echo 'starting dispenserd in foreground...'
+        ROOT=$ROOT $ROOT/bin/dispenserd
+    fi
+fi
