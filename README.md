@@ -1,4 +1,4 @@
-# dispenserd
+# dispenserd [![Build Status](https://travis-ci.org/ebrian/dispenserd.svg?branch=master)](https://travis-ci.org/ebrian/dispenserd)
 Modern Job Queue for Modern Developers
 
 Dispenserd is a modern job queue designed to be: fast, reliable, feature rich, and tailored towards the needs of developers.
