@@ -12,11 +12,12 @@ Dispenserd is a modern job queue designed to be: fast, reliable, feature rich, a
 - Job priorities
 - Job lanes to separate classes of jobs for different consumers
 
+---
+
 ### Dependencies
 - Golang 1.6+
 
 ### Installation
----
 
 ##### Run from source folder (Linux/macOS)
 ```
@@ -47,7 +48,8 @@ coming soon
 ---
 
 ### Configuration
----
+
+You can specify a configuration file located at `$ROOT/config/queue.json` if you'd like, but it's completely optional. The config file that comes with the source represents all of the default values. Dispenserd will run just fine with no modifications or not config file at all.
 
 #### address (0-255,0-255,0-255,0-255:1-65536), default: 127.0.0.1:8282
 Set this to the address you'd like dispenserd to bind to.
@@ -63,10 +65,11 @@ If `persist_queue` is set to true, `persist_interval` will be used by dispenserd
 
 If for some reason your use case involves queues that are abnormally large (perhaps > 2,000,000 pending jobs), the size of `$ROOT/config/queue.json` could be quite large and take time to write to disk, depending on your hardware. Unless your server infrastructure is prone to abrupt power loss, it's probably safe to leave this at the default value.
 
-### API
 ---
 
-#### Status: `/`
+### API
+
+### Status: `/`
 ##### Request Body
 ```
 empty
@@ -91,9 +94,7 @@ empty
 }
 ```
 
----
-
-#### List Jobs: `/jobs`
+### List Jobs: `/jobs`
 ##### Request Body
 ```
 empty
@@ -115,9 +116,7 @@ empty
 ]
 ```
 
----
-
-#### Schedule Job: `/schedule`
+### Schedule Job: `/schedule`
 ##### Request Body
 ```json
 {
@@ -141,9 +140,7 @@ empty
 }
 ```
 
----
-
-#### Receive Job (blocking): `/receive_block`
+### Receive Job (blocking): `/receive_block`
 ##### Request Body
 ```
 empty
@@ -157,9 +154,7 @@ since this is a blocking response, the request will simply hang until a job is r
 plain text job
 ```
 
----
-
-#### Receive Job (non-blocking): `/receive_noblock`
+### Receive Job (non-blocking): `/receive_noblock`
 ##### Request Body
 ```
 empty
