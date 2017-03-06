@@ -52,7 +52,7 @@ func main() {
     http.HandleFunc("/receive_block", ServiceReceiveBlock)
     http.HandleFunc("/receive_noblock", ServiceReceiveNoBlock)
 
-    fmt.Println("server started on port", 8282)
+    fmt.Println("server started on", config.Address)
 
-    http.ListenAndServe(":8282", nil)
+    http.ListenAndServe(config.Address, nil)
 }

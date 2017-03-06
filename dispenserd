@@ -5,8 +5,7 @@ ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 VERSION="0.0.1"
 
 echo
-echo "dispenserd version $VERSION by: b"
-echo 'starting dispenserd...'
+echo "dispenserd version $VERSION"
 
 if [[ ! -f $ROOT/bin/dispenserd ]]; then
     echo "build dispenserd first: $ROOT/build"

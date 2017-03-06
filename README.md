@@ -49,6 +49,9 @@ coming soon
 ### Configuration
 ---
 
+#### address (0-255,0-255,0-255,0-255:1-65536), default: 127.0.0.1:8282
+Set this to the address you'd like dispenserd to bind to.
+
 #### persist_queue [true/false], default: true
 Setting `persist_queue` to true will cause the following three things to happen over the course of dispenserd running:
  1. Upon start-up, dispenserd will look for `$ROOT/config/queue.json`. If present, it will attempt to parse that file and load the jobs into the queue.

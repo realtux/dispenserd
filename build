@@ -5,7 +5,7 @@ ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 VERSION="0.0.1"
 
 echo
-echo "dispenserd version $VERSION by: b"
+echo "dispenserd version $VERSION"
 echo 'building dispenserd...'
 
 GOPATH=$ROOT go build -o $ROOT/bin/dispenserd dispenserd

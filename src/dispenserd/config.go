@@ -9,12 +9,14 @@ import (
 
 // config
 type options struct {
-    PersistQueue    bool `json:"persist_queue"`
-    PersistInterval int  `json:"persist_interval"`
+    Address         string `json:"addr"`
+    PersistQueue    bool   `json:"persist_queue"`
+    PersistInterval int    `json:"persist_interval"`
 }
 
 func init_options() options {
     return options{
+        Address:         "127.0.0.1:8282",
         PersistQueue:    false,
         PersistInterval: 60,
     }
