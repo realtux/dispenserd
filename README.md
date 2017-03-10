@@ -49,7 +49,7 @@ coming soon
 
 ### Configuration
 
-You can specify a configuration file located at `$ROOT/config/queue.json` if you'd like, but it's completely optional. The config file that comes with the source represents all of the default values. Dispenserd will run just fine with no modifications or not config file at all.
+You can specify a configuration file located at `$ROOT/config/queue.json` if you'd like, but it's completely optional. The config file that comes with the source represents all of the default values. Dispenserd will run just fine with no modifications or no config file at all.
 
 #### address (0-255,0-255,0-255,0-255:1-65536), default: 127.0.0.1:8282
 Set this to the address you'd like dispenserd to bind to.
