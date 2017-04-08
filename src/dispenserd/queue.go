@@ -5,7 +5,7 @@ import (
     "fmt"
     "io"
     "math/rand"
-    "sort"
+    //"sort"
     "strconv"
     "time"
 )
@@ -14,15 +14,19 @@ type job struct {
     JobNum    uint64  `json:"job_num"`
     Hash      string  `json:"hash"`
     Timestamp string  `json:"timestamp"`
-    Priority  *uint    `json:"priority"`
+    Lane      *string `json:"lane"`
+    Priority  *uint   `json:"priority"`
     Message   *string `json:"message"`
 }
 
 type job_set []job
 
-var queue = job_set{}
+var queue = []job_set{}
+var lanes = []string{"main"}
+
 var idle_workers = 0
 var total_jobs uint64 = 0
+var current_jobs uint64 = 0
 
 func (a job_set) Len() int      { return len(a) }
 func (a job_set) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
@@ -48,12 +52,14 @@ func InitJob() job {
     hash := sha1.New()
     io.WriteString(hash, strconv.Itoa(rand_number)+timestamp)
 
+    var default_lane string = JOB_DEFAULT_LANE
     var default_priority uint = JOB_DEFAULT_PRIORITY
 
     return job{
         JobNum:    job_num,
         Hash:      fmt.Sprintf("%x", hash.Sum(nil)),
         Timestamp: timestamp,
+        Lane:      &default_lane,
         Priority:  &default_priority,
         Message:   nil,
     }
@@ -64,6 +70,7 @@ func InitJobTemplate() job {
         JobNum:    0,
         Hash:      "",
         Timestamp: "",
+        Lane:      nil,
         Priority:  nil,
         Message:   nil,
     }
@@ -72,10 +79,14 @@ func InitJobTemplate() job {
 func InsertJob(job job) {
     mu.Lock()
 
-    queue = append(queue, job)
+    lane_index := LaneIndex(*job.Lane)
+fmt.Println(lane_index)
+    queue[lane_index] = append(queue[lane_index], job)
+
+    current_jobs += 1
 
     // this kills perf, consider replacing with periodic sort
-    SortQueue()
+    //SortQueue()
 
     if idle_workers > 0 {
         ready <- 1
@@ -86,6 +97,35 @@ func InsertJob(job job) {
 
 func SortQueue() {
     //mu.Lock()
-    sort.Sort(job_set(queue))
+    //sort.Sort(job_set(queue))
     //mu.Unlock()
+}
+
+func LaneIndex(search_lane string) int {
+    index := -1
+fmt.Println("searching for lane", search_lane)
+    if search_lane == "" || search_lane == "main" {
+fmt.Println("found main lane")
+        return 0
+    }
+
+    for i, lane := range lanes {
+        if search_lane == lane {
+            index = i
+fmt.Println("found lane at", i)
+            break
+        }
+    }
+
+    if index == -1 {
+fmt.Println("creating new lane", search_lane, "at", len(lanes))
+        lanes = append(lanes, search_lane)
+        queue = append(queue, job_set{})
+
+        new_index := len(lanes) - 1
+
+        return new_index
+    } else {
+        return index
+    }
 }

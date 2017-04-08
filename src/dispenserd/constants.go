@@ -10,5 +10,6 @@ const (
     CODE_SUCCESS      = 0
     CODE_INVALID_DATA = 1
 
+    JOB_DEFAULT_LANE = "main"
     JOB_DEFAULT_PRIORITY = 512
 )

@@ -96,6 +96,10 @@ func ServiceSchedule(res http.ResponseWriter, req *http.Request) {
         final_job.Priority = incoming_job.Priority
     }
 
+    if incoming_job.Lane != nil {
+        final_job.Lane = incoming_job.Lane
+    }
+
     InsertJob(final_job)
 
     payload := generic_payload{
@@ -121,13 +125,15 @@ func ServiceJobs(res http.ResponseWriter, req *http.Request) {
 func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
     mu.Lock()
 
+    var current_lane int
+
     send_job := func() {
         // take the next job off the front
-        next_job := queue[0]
-        if len(queue) == 1 {
-            queue = job_set{}
+        next_job := queue[current_lane][0]
+        if len(queue[current_lane]) == 1 {
+            queue[current_lane] = job_set{}
         } else {
-            queue = queue[1:]
+            queue[current_lane] = queue[current_lane][1:]
         }
         mu.Unlock()
 
@@ -136,7 +142,24 @@ func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
         res.Write([]byte(*next_job.Message))
     }
 
-    if len(queue) == 0 {
+    type request struct {
+        Lane *string `json:"lane"`
+    }
+
+    incoming_request := request{
+        Lane: nil,
+    }
+
+    incoming_data := json.NewDecoder(req.Body)
+    incoming_data.Decode(&incoming_request)
+
+    if incoming_request.Lane == nil {
+        current_lane = 0
+    } else {
+        current_lane = LaneIndex(*incoming_request.Lane)
+    }
+
+    if len(queue[current_lane]) == 0 {
         idle_workers += 1
         mu.Unlock()
 
@@ -146,7 +169,7 @@ func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
             select {
             case <-ready:
                 mu.Lock()
-                if len(queue) == 0 {
+                if len(queue[current_lane]) == 0 {
                     mu.Unlock()
                     continue
                 }
@@ -167,33 +190,36 @@ func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
     }
 }
 
-func ServiceReceiveNoBlock(res http.ResponseWriter, req *http.Request) {
-    mu.Lock()
-
-    if len(queue) == 0 {
-        mu.Unlock()
-
-        // nothing in queue means return immediately
-        payload := generic_payload{
-            Status:  STATUS_OK,
-            Code:    CODE_SUCCESS,
-            Message: "empty queue",
-        }
-
-        json_response, _ := json.MarshalIndent(payload, "", "  ")
-
-        res.Header().Set("Content-Type", "application/json")
-        res.WriteHeader(http.StatusOK)
-        res.Write(json_response)
-        return
-    }
-
-    // take the next job off the front
-    next_job := queue[0]
-    queue = queue[1:]
-    mu.Unlock()
-
-    res.Header().Set("Content-Type", "text/plain")
-    res.WriteHeader(http.StatusOK)
-    res.Write([]byte(*next_job.Message))
-}
+// func ServiceReceiveNoBlock(res http.ResponseWriter, req *http.Request) {
+//     mu.Lock()
+//
+//     if len(queue) == 0 {
+//         mu.Unlock()
+//
+//         // nothing in queue means return immediately
+//         payload := generic_payload{
+//             Status:  STATUS_OK,
+//             Code:    CODE_SUCCESS,
+//             Message: "empty queue",
+//         }
+//
+//         json_response, _ := json.MarshalIndent(payload, "", "  ")
+//
+//         res.Header().Set("Content-Type", "application/json")
+//         res.WriteHeader(http.StatusOK)
+//         res.Write(json_response)
+//         return
+//     }
+//
+//     // take the next job off the front
+//     next_job := queue[0]
+//     queue = queue[1:]
+//
+//     current_jobs -= 1
+//
+//     mu.Unlock()
+//
+//     res.Header().Set("Content-Type", "text/plain")
+//     res.WriteHeader(http.StatusOK)
+//     res.Write([]byte(*next_job.Message))
+// }

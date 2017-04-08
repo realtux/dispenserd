@@ -33,6 +33,9 @@ func main() {
         os.Exit(1)
     }
 
+    // set the main queue
+    queue = append(queue, job_set{})
+
     // init config
     ConfigLoad()
 
@@ -45,12 +48,14 @@ func main() {
         os.Exit(1)
     }()
 
+    fmt.Println(lanes)
+
     // handle service endpoints
     http.HandleFunc("/", ServiceStatus)
     http.HandleFunc("/jobs", ServiceJobs)
     http.HandleFunc("/schedule", ServiceSchedule)
     http.HandleFunc("/receive_block", ServiceReceiveBlock)
-    http.HandleFunc("/receive_noblock", ServiceReceiveNoBlock)
+    //http.HandleFunc("/receive_noblock", ServiceReceiveNoBlock)
 
     fmt.Println("server started on", config.Address)
 

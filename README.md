@@ -77,20 +77,24 @@ empty
 ##### Response Body
 ```json
 {
-  "name": "dispenserd",
-  "version": "0.0.1",
-  "timestamp": "2017-02-05T23:42:51-06:00",
-  "status": "ok",
-  "payload": {
-    "system": {
-      "pid": 10169,
-      "cpu_count": 8
-    },
-    "stats": {
-      "idle_workers": 0,
-      "queued_jobs": 0
+    "name": "dispenserd",
+    "version": "0.0.1",
+    "timestamp": "2017-02-05T23:42:51-06:00",
+    "status": "ok",
+    "payload": {
+        "system": {
+            "pid": 10169,
+            "cpu_count": 8
+        },
+        "stats": {
+            "idle_workers": 0
+        },
+        "lanes": {
+            "main": {
+                "queued_jobs": 0
+            }
+        }
     }
-  }
 }
 ```
 
@@ -106,44 +110,58 @@ empty
 ##### Response Body (queue not empty)
 ```json
 [
-  {
-    "job_num": 1,
-    "hash": "5066400f81e3ba8e6160279b4fad9d6ed5598584",
-    "timestamp": "2017-02-05T23:48:14-06:00",
-    "priority": 1,
-    "message": "job message here"
-  }
+    {
+        "job_num": 1,
+        "hash": "5066400f81e3ba8e6160279b4fad9d6ed5598584",
+        "timestamp": "2017-02-05T23:48:14-06:00",
+        "priority": 1,
+        "message": "job message here"
+    }
 ]
 ```
 
 ### Schedule Job: `/schedule`
-##### Request Body
+##### Request Body (main lane)
 ```json
 {
     "priority": 1,
     "message": "msg here. stringified json, serialized objects, etc..."
 }
 ```
+##### Request Body (specific lane)
+```json
+{
+    "priority": 1,
+    "lane": "video",
+    "message": "msg here. stringified json, serialized objects, etc..."
+}
+```
 ##### Response Body (valid request)
 ```json
 {
-  "status": "ok",
-  "code": 0
+    "status": "ok",
+    "code": 0
 }
 ```
 ##### Response Body (invalid request)
 ```json
 {
-  "status": "error",
-  "code": 1,
-  "message": "missing message"
+    "status": "error",
+    "code": 1,
+    "message": "missing message"
 }
 ```
 
 ### Receive Job (blocking): `/receive_block`
-##### Request Body
+##### Request Body (main lane)
 ```
 empty
+```
+##### Request Body (specific lane)
+```json
+{
+    "lane": "video"
+}
 ```
 ##### Response Body (no job ready)
 ```
@@ -159,12 +177,18 @@ plain text job
 ```
 empty
 ```
+##### Request Body (specific lane)
+```json
+{
+    "lane": "video"
+}
+```
 ##### Response Body (no job ready)
 ```json
 {
-  "status": "ok",
-  "code": 0,
-  "message": "empty queue"
+    "status": "ok",
+    "code": 0,
+    "message": "empty queue"
 }
 ```
 ##### Response Body (job ready)
