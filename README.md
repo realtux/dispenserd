@@ -65,6 +65,12 @@ If `persist_queue` is set to true, `persist_interval` will be used by dispenserd
 
 If for some reason your use case involves queues that are abnormally large (perhaps > 2,000,000 pending jobs), the size of `$ROOT/config/queue.json` could be quite large and take time to write to disk, depending on your hardware. Unless your server infrastructure is prone to abrupt power loss, it's probably safe to leave this at the default value.
 
+#### throttle_receive [true/false], default: false
+If `throttle_receive` is set to true, a `25ms` delay will be enforced between consuming jobs via `/receive_block`. This effectively limits receive operations to 40/sec max.
+
+#### throttle_schedule [true/false], default: false
+If `throttle_schedule` is set to true, a `25ms` delay will be enforced between scheduling jobs. This effectively limits schedule operations to 40/sec max.
+
 ---
 
 ### Performance Considerations
