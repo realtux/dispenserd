@@ -57,7 +57,26 @@ func LoadQueue() {
                 // add the current jobs from the length of the lane
                 current_jobs += uint64(len(lane))
 
-                for _, v := range lane {
+                var previous_priority uint = 0
+                priority := -1
+
+                for i, v := range lane {
+                    if priority == -1 {
+                        priority = int(*v.Priority)
+                    }
+
+                    // continue establish state of the current lane for later
+                    if v.Lane != nil {
+                        current_lane = *v.Lane
+
+                        // add lane to indexes
+                        _, ok := indexes[current_lane]
+
+                        if !ok {
+                            indexes[current_lane] = make(map[uint]uint64)
+                        }
+                    }
+
                     // ascertain the newest high job num
                     if v.JobNum > highest_job_num {
                         highest_job_num = v.JobNum
@@ -68,10 +87,13 @@ func LoadQueue() {
                         lanes = append(lanes, *v.Lane)
                     }
 
-                    // continue establish state of the current lane for later
-                    if v.Lane != nil {
-                        current_lane = *v.Lane
+                    // check for priority change to establish index boundaries
+                    if int(*v.Priority) != priority && int(*v.Priority) > priority {
+                        indexes[current_lane][previous_priority] = uint64(i)
+                        priority = int(*v.Priority)
                     }
+
+                    previous_priority = *v.Priority
                 }
 
                 // determine where the lane will go, queue[0] is established by default
@@ -85,4 +107,6 @@ func LoadQueue() {
             total_jobs = highest_job_num
         }
     }
+
+    fmt.Println("post queue load indexes", indexes)
 }

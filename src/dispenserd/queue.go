@@ -23,6 +23,7 @@ type job_set []job
 
 var queue = []job_set{}
 var lanes = []string{"main"}
+var indexes = map[string]map[uint]uint64{"main": make(map[uint]uint64)}
 
 var idle_workers = 0
 var total_jobs uint64 = 0
@@ -77,48 +78,103 @@ func InitJobTemplate() job {
 }
 
 func InsertJob(job job) {
+op_start := time.Now()
     mu.Lock()
 
-    lane_index := LaneIndex(*job.Lane)
-fmt.Println(lane_index)
-    queue[lane_index] = append(queue[lane_index], job)
+    // get the queue index where this lane is stored
+    li := LaneIndex(*job.Lane)
+    lane := *job.Lane
+
+    queue_size := uint64(len(queue[li]))
+
+    // if the queue is empty, simply make the job the only entry
+    if queue_size == 0 {
+        queue[li] = append(queue[li], job)
+        indexes[lane][*job.Priority] = 1
+    } else {
+        // check for a boundary index
+        i, ok := indexes[lane][*job.Priority]
+
+        if ok {
+            queue[li] = append(queue[li][:i], append(job_set{job}, queue[li][i:]...)...)
+            indexes[lane][*job.Priority] += 1
+        } else {
+            i = uint64(i)
+            priority := -1
+
+            for i_qjob, qjob := range queue[li] {
+                i = uint64(i_qjob)
+
+                // keep priority state
+                if int(*qjob.Priority) > priority {
+                    priority = int(*qjob.Priority)
+                }
+
+                // if job is higher priority than everything, insert first
+                if *job.Priority < *qjob.Priority {
+                    queue[li] = append(job_set{job}, queue[li]...)
+                    i += 1
+                    break
+                }
+
+                // if job is lower priority than everything, insert last
+                if *job.Priority >= *qjob.Priority && queue_size == i + 1 {
+                    queue[li] = append(queue[li], job)
+                    i = queue_size + 1
+                    break
+                }
+
+                // job in middle of priorities
+                if queue_size > i + 1 && *job.Priority < *queue[li][i + 1].Priority {
+                    queue[li] = append(queue[li][:i+1], append(job_set{job}, queue[li][i+1:]...)...)
+                    i += 2
+                    break
+                }
+            }
+
+            indexes[lane][*job.Priority] = i
+        }
+
+        // increment all boundaries
+        for k, _ := range indexes[lane] {
+            if k > *job.Priority {
+                indexes[lane][k] += 1
+            }
+        }
+    }
 
     current_jobs += 1
-
-    // this kills perf, consider replacing with periodic sort
-    //SortQueue()
 
     if idle_workers > 0 {
         ready <- 1
     }
 
     mu.Unlock()
-}
-
-func SortQueue() {
-    //mu.Lock()
-    //sort.Sort(job_set(queue))
-    //mu.Unlock()
+fmt.Println("mutex on, insertion took:", time.Since(op_start))
 }
 
 func LaneIndex(search_lane string) int {
     index := -1
-fmt.Println("searching for lane", search_lane)
+
     if search_lane == "" || search_lane == "main" {
-fmt.Println("found main lane")
         return 0
+    }
+
+    // check if index exists
+    _, ok := indexes[search_lane]
+
+    if !ok {
+        indexes[search_lane] = make(map[uint]uint64)
     }
 
     for i, lane := range lanes {
         if search_lane == lane {
             index = i
-fmt.Println("found lane at", i)
             break
         }
     }
 
     if index == -1 {
-fmt.Println("creating new lane", search_lane, "at", len(lanes))
         lanes = append(lanes, search_lane)
         queue = append(queue, job_set{})
 
@@ -127,5 +183,21 @@ fmt.Println("creating new lane", search_lane, "at", len(lanes))
         return new_index
     } else {
         return index
+    }
+}
+
+func ResetIndexes(lane string) {
+    indexes[lane] = make(map[uint]uint64)
+}
+
+func DecrementIndexes(lane string) {
+    // decrement all indexes such that they aren't zero
+    for k, v := range indexes[lane] {
+        if v - 1 == 0 {
+            delete(indexes[lane], k)
+            continue
+        }
+
+        indexes[lane][k] -= 1
     }
 }

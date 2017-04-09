@@ -1,8 +1,9 @@
 #!/bin/bash
 
-#for i in {1..50000}; do
-while true; do
-    RAND=( $RANDOM % 2500 + 1 )
-    #curl http://127.0.0.1:8282/schedule -d "{\"priority\": $RAND, \"message\": \"$RAND test\"}"
-    curl http://127.0.0.1:8282/schedule -d "{\"priority\": 1, \"message\": \"1 test\"}"
+for i in {1..24000}; do
+#while true; do
+    RAND=$(( ( RANDOM % 25 )  + 1 ))
+    curl http://127.0.0.1:8282/schedule -d "{\"priority\": $RAND, \"message\": \"$RAND test\"}"
+    curl http://127.0.0.1:8282/schedule -d "{\"lane\": \"video\", \"priority\": $RAND, \"message\": \"$RAND test\"}"
+    curl http://127.0.0.1:8282/schedule -d "{\"lane\": \"processor\", \"priority\": $RAND, \"message\": \"$RAND test\"}"
 done

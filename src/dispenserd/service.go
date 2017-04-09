@@ -27,12 +27,12 @@ func ServiceStatus(res http.ResponseWriter, req *http.Request) {
 
     type stats struct {
         IdleWorkers int `json:"idle_workers"`
-        QueuedJobs  int `json:"queued_jobs"`
     }
 
     type payload struct {
-        System system `json:"system"`
-        Stats  stats  `json:"stats"`
+        System     system         `json:"system"`
+        Stats      stats          `json:"stats"`
+        QueuedJobs map[string]int `json:"queued_jobs"`
     }
 
     type info struct {
@@ -43,15 +43,21 @@ func ServiceStatus(res http.ResponseWriter, req *http.Request) {
         Payload   payload `json:"payload"`
     }
 
+    lane_stats := make(map[string]int)
+
+    for k, v := range lanes {
+        lane_stats[v] = len(queue[k])
+    }
+
     response := info{
         Name:      NAME,
         Version:   VERSION,
         Timestamp: time.Now().Format(time.RFC3339),
         Status:    STATUS_OK,
         Payload: payload{
+            QueuedJobs: lane_stats,
             Stats: stats{
                 IdleWorkers: idle_workers,
-                QueuedJobs:  len(queue),
             },
             System: system{
                 Pid:      os.Getpid(),
@@ -130,11 +136,19 @@ func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
     send_job := func() {
         // take the next job off the front
         next_job := queue[current_lane][0]
+
         if len(queue[current_lane]) == 1 {
             queue[current_lane] = job_set{}
+
+            // queue empty, good time to reset indexes
+            ResetIndexes(*next_job.Lane)
         } else {
             queue[current_lane] = queue[current_lane][1:]
+
+            // queue not empty, decrement
+            DecrementIndexes(*next_job.Lane)
         }
+
         mu.Unlock()
 
         res.Header().Set("Content-Type", "text/plain")
@@ -190,36 +204,64 @@ func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
     }
 }
 
-// func ServiceReceiveNoBlock(res http.ResponseWriter, req *http.Request) {
-//     mu.Lock()
-//
-//     if len(queue) == 0 {
-//         mu.Unlock()
-//
-//         // nothing in queue means return immediately
-//         payload := generic_payload{
-//             Status:  STATUS_OK,
-//             Code:    CODE_SUCCESS,
-//             Message: "empty queue",
-//         }
-//
-//         json_response, _ := json.MarshalIndent(payload, "", "  ")
-//
-//         res.Header().Set("Content-Type", "application/json")
-//         res.WriteHeader(http.StatusOK)
-//         res.Write(json_response)
-//         return
-//     }
-//
-//     // take the next job off the front
-//     next_job := queue[0]
-//     queue = queue[1:]
-//
-//     current_jobs -= 1
-//
-//     mu.Unlock()
-//
-//     res.Header().Set("Content-Type", "text/plain")
-//     res.WriteHeader(http.StatusOK)
-//     res.Write([]byte(*next_job.Message))
-// }
+func ServiceReceiveNoBlock(res http.ResponseWriter, req *http.Request) {
+    var current_lane int
+
+    type request struct {
+        Lane *string `json:"lane"`
+    }
+
+    incoming_request := request{
+        Lane: nil,
+    }
+
+    incoming_data := json.NewDecoder(req.Body)
+    incoming_data.Decode(&incoming_request)
+
+    if incoming_request.Lane == nil {
+        current_lane = 0
+    } else {
+        current_lane = LaneIndex(*incoming_request.Lane)
+    }
+
+    mu.Lock()
+
+    if len(queue[current_lane]) == 0 {
+        mu.Unlock()
+
+        // nothing in queue means return immediately
+        payload := generic_payload{
+            Status:  STATUS_OK,
+            Code:    CODE_SUCCESS,
+            Message: "empty queue",
+        }
+
+        json_response, _ := json.MarshalIndent(payload, "", "  ")
+
+        res.Header().Set("Content-Type", "application/json")
+        res.WriteHeader(http.StatusOK)
+        res.Write(json_response)
+        return
+    }
+
+    // take the next job off the front
+    next_job := queue[current_lane][0]
+
+    if len(queue[current_lane]) == 1 {
+        queue[current_lane] = job_set{}
+
+        // queue empty, good time to reset indexes
+        ResetIndexes(*next_job.Lane)
+    } else {
+        queue[current_lane] = queue[current_lane][1:]
+
+        // queue not empty, decrement
+        DecrementIndexes(*next_job.Lane)
+    }
+
+    mu.Unlock()
+
+    res.Header().Set("Content-Type", "text/plain")
+    res.WriteHeader(http.StatusOK)
+    res.Write([]byte(*next_job.Message))
+}

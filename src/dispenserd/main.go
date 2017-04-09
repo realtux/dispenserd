@@ -55,7 +55,7 @@ func main() {
     http.HandleFunc("/jobs", ServiceJobs)
     http.HandleFunc("/schedule", ServiceSchedule)
     http.HandleFunc("/receive_block", ServiceReceiveBlock)
-    //http.HandleFunc("/receive_noblock", ServiceReceiveNoBlock)
+    http.HandleFunc("/receive_noblock", ServiceReceiveNoBlock)
 
     fmt.Println("server started on", config.Address)
 

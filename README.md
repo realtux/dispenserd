@@ -67,6 +67,17 @@ If for some reason your use case involves queues that are abnormally large (perh
 
 ---
 
+### Performance Considerations
+
+#### Scalability with a high rate of job scheduling/receiving
+Because dispenserd uses HTTP and a new connection for every operation, it's possible to run into a situation where a system runs out of sockets to use to connect with dispenserd. The time where this would most likely happen is during sustained high rate of job scheduling with or without a high rate of job receives. After a connection is closed, the connection sits in a `TIME_WAIT` status for somewhere between 30-120 seconds on average. If you are scheduling/receiving jobs at a rate faster than 200/sec, you will likely hit this limit. There are a few ways of handling this situation:
+ 1. Throttle dispenserd with either the `throttle_schedule` or `throttle_receive` options.
+ 2. Tune your system to lower the `TIME_WAIT` status.
+ 3. Tune your system to reuse sockets in the `TIME_WAIT` status.
+Any one of these will work, and each has their pros and cons.
+
+---
+
 ### API
 
 ### Status: `/`

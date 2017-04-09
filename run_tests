@@ -15,6 +15,9 @@ sleep 1
 echo ''
 echo 'starting tests...'
 python tests/test.py
+test_status=$(echo $?)
 
 # kill dispenserd
 pidof dispenserd | xargs kill -15
+
+exit $test_status
