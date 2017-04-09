@@ -56,7 +56,7 @@ class TestDispenserd(unittest.TestCase):
         res = requests.get(self.base_url + '/jobs')
         json = res.json()
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(len(json[0]), 0)
+        self.assertEqual(len(json[0]), 10)
 
 
 
