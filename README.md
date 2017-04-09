@@ -114,20 +114,32 @@ empty
 ```
 empty
 ```
-##### Response Body (queue empty)
+##### Response Body (single lane, queue empty)
 ```json
-[]
+[
+    []
+]
+```
+##### Response Body (multiple lanes, all queues empty)
+```json
+[
+    [],
+    [],
+    []
+]
 ```
 ##### Response Body (queue not empty)
 ```json
 [
-    {
-        "job_num": 1,
-        "hash": "5066400f81e3ba8e6160279b4fad9d6ed5598584",
-        "timestamp": "2017-02-05T23:48:14-06:00",
-        "priority": 1,
-        "message": "job message here"
-    }
+    [
+        {
+            "job_num": 1,
+            "hash": "5066400f81e3ba8e6160279b4fad9d6ed5598584",
+            "timestamp": "2017-02-05T23:48:14-06:00",
+            "priority": 1,
+            "message": "job message here"
+        }
+    ]
 ]
 ```
 
