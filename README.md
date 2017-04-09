@@ -92,7 +92,7 @@ Any one of these will work, and each has their pros and cons.
 #### Receive Job (blocking): `/receive_block`
 #### Receive Job (non-blocking): `/receive_noblock`
 
-### []((#api_status))Status: `/`
+### [](#api_status)Status: `/`
 ##### Request Body
 ```
 empty
