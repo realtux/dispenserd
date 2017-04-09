@@ -86,13 +86,13 @@ Any one of these will work, and each has their pros and cons.
 
 ### API
 
-#### Status: `/`
+#### [Status: `/`](#api_status)
 #### List Jobs: `/jobs`
 #### Schedule Job: `/schedule`
 #### Receive Job (blocking): `/receive_block`
 #### Receive Job (non-blocking): `/receive_noblock`
 
-### Status: `/`
+### []((#api_status))Status: `/`
 ##### Request Body
 ```
 empty
