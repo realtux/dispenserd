@@ -87,6 +87,10 @@ Any one of these will work, and each has their pros and cons.
 ### API
 
 ### Status: `/`
+Required Request Parameters: None
+
+Optional Request Parameters: None
+
 ##### Request Body
 ```
 empty
@@ -116,6 +120,10 @@ empty
 ```
 
 ### List Jobs: `/jobs`
+Required Request Parameters: None
+
+Optional Request Parameters: None
+
 ##### Request Body
 ```
 empty
@@ -150,6 +158,13 @@ empty
 ```
 
 ### Schedule Job: `/schedule`
+Required Request Parameters:
+ - **message:** string
+
+Optional Request Parameters:
+ - **lane:** string, default: main
+ - **priority:** 0-4294967295, default: 512
+
 ##### Request Body (main lane)
 ```json
 {
@@ -182,6 +197,11 @@ empty
 ```
 
 ### Receive Job (blocking): `/receive_block`
+Required Request Parameters: None
+
+Optional Request Parameters:
+ - **lane:** string, default: main
+ 
 ##### Request Body (main lane)
 ```
 empty
@@ -202,6 +222,11 @@ plain text job
 ```
 
 ### Receive Job (non-blocking): `/receive_noblock`
+Required Request Parameters: None
+
+Optional Request Parameters:
+ - **lane:** string, default: main
+
 ##### Request Body
 ```
 empty
