@@ -1,7 +1,7 @@
 # dispenserd [![Build Status](https://travis-ci.org/ebrian/dispenserd.svg?branch=master)](https://travis-ci.org/ebrian/dispenserd)
 Modern Job Queue for Modern Developers
 
-Dispenserd is a modern job queue designed to be: fast, reliable, feature rich, and tailored towards the needs of developers.
+dispenserd is a modern job queue designed to be: fast, reliable, feature rich, and tailored towards the needs of developers.
 
 ### Primary Features
 - No compromise on stability or reliability
@@ -14,8 +14,13 @@ Dispenserd is a modern job queue designed to be: fast, reliable, feature rich, a
 
 ---
 
+### Contributing
+If you'd like to contribute, fork the repo and beginning writing code. If you open a PR, tests will begin to run. If tests don't pass, please correct the part of your code causing tests to fail and resubmit your PR. A dispenderd roadmap will be published in the coming weeks.
+
+---
+
 ### Dependencies
-- Golang 1.6+
+- Golang 1.6+ (tests run against 1.6.x, 1.7.x, 1.8.x)
 
 ### Installation
 
@@ -45,11 +50,16 @@ coming soon
 coming soon
 ```
 
+##### Optionally run tests (Python 2.7 required)
+```bash
+./run_tests
+```
+
 ---
 
 ### Configuration
 
-You can specify a configuration file located at `$ROOT/config/queue.json` if you'd like, but it's completely optional. The config file that comes with the source represents all of the default values. Dispenserd will run just fine with no modifications or no config file at all.
+You can specify a configuration file located at `$ROOT/config/queue.json` if you'd like, but it's completely optional. The config file that comes with the source represents all of the default values. dispenserd will run just fine with no modifications or no config file at all.
 
 #### address (0-255,0-255,0-255,0-255:1-65536), default: 127.0.0.1:8282
 Set this to the address you'd like dispenserd to bind to.
@@ -99,13 +109,13 @@ empty
 ```json
 {
     "name": "dispenserd",
-    "version": "0.0.1",
+    "version": "x.x.x",
     "timestamp": "2017-02-05T23:42:51-06:00",
     "status": "ok",
     "payload": {
         "system": {
-            "pid": 10169,
-            "cpu_count": 8
+            "pid": 12345,
+            "cpu_count": 32
         },
         "stats": {
             "idle_workers": 0
