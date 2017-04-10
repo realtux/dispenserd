@@ -20,7 +20,7 @@ Dispenserd is a modern job queue designed to be: fast, reliable, feature rich, a
 ### Installation
 
 ##### Run from source folder (Linux/macOS)
-```
+```bash
 # get the code
 git clone https://github.com/ebrian/dispenser
 cd dispenser
