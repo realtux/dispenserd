@@ -9,16 +9,20 @@ import (
 
 // config
 type options struct {
-    Address         string `json:"addr"`
-    PersistQueue    bool   `json:"persist_queue"`
-    PersistInterval int    `json:"persist_interval"`
+    Address          string `json:"addr"`
+    PersistQueue     bool   `json:"persist_queue"`
+    PersistInterval  int    `json:"persist_interval"`
+    ThrottleReceive  bool   `json:"throttle_receive"`
+    ThrottleSchedule bool   `json:"throttle_schedule"`
 }
 
 func init_options() options {
     return options{
-        Address:         "127.0.0.1:8282",
-        PersistQueue:    false,
-        PersistInterval: 60,
+        Address:          "127.0.0.1:8282",
+        PersistQueue:     false,
+        PersistInterval:  60,
+        ThrottleReceive:  false,
+        ThrottleSchedule: false,
     }
 }
 

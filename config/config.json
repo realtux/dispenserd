@@ -2,6 +2,6 @@
     "address": "127.0.0.1:8282",
     "persist_queue": true,
     "persist_interval": 3600,
-    "throttle_schedule": false,
-    "throttle_receive": false
+    "throttle_receive": false,
+    "throttle_schedule": false
 }

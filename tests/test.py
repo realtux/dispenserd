@@ -41,8 +41,9 @@ class TestDispenserd(unittest.TestCase):
         previous_date = ''
         for job in json[0]:
             self.assertLessEqual(previous_priority, job['priority'])
+            if previous_priority == job['priority']:
+                self.assertLessEqual(previous_date, job['timestamp'])
             previous_priority = job['priority']
-            self.assertLessEqual(previous_date, job['timestamp'])
             previous_date = job['timestamp']
 
     def test033_queue_drains(self):

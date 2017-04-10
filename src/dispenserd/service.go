@@ -115,6 +115,10 @@ func ServiceSchedule(res http.ResponseWriter, req *http.Request) {
 
     json_response, _ := json.MarshalIndent(payload, "", "  ")
 
+    if config.ThrottleSchedule {
+        time.Sleep(time.Duration(CONFIG_DEFAULT_THROTTLE_MS) * time.Millisecond)
+    }
+
     res.WriteHeader(http.StatusOK)
     res.Write(json_response)
 }
@@ -130,6 +134,10 @@ func ServiceJobs(res http.ResponseWriter, req *http.Request) {
 
 func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
     mu.Lock()
+
+    if config.ThrottleReceive {
+        time.Sleep(time.Duration(CONFIG_DEFAULT_THROTTLE_MS) * time.Millisecond)
+    }
 
     var current_lane int
 

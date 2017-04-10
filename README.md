@@ -86,12 +86,6 @@ Any one of these will work, and each has their pros and cons.
 
 ### API
 
-#### [Status: `/`](#status)
-#### [List Jobs: `/jobs`](#list-jobs)
-#### Schedule Job: `/schedule`
-#### Receive Job (blocking): `/receive_block`
-#### Receive Job (non-blocking): `/receive_noblock`
-
 ### Status: `/`
 ##### Request Body
 ```
