@@ -5,6 +5,7 @@ import (
     "net/http"
     "os"
     "os/signal"
+    "runtime"
     "sync"
     "syscall"
 )
@@ -33,6 +34,8 @@ func main() {
         os.Exit(1)
     }
 
+    runtime.GOMAXPROCS(runtime.NumCPU())
+
     // set the main queue
     queue = append(queue, job_set{})
 
@@ -47,8 +50,6 @@ func main() {
         cleanup()
         os.Exit(1)
     }()
-
-    fmt.Println(lanes)
 
     // handle service endpoints
     http.HandleFunc("/", ServiceStatus)

@@ -107,6 +107,4 @@ func LoadQueue() {
             total_jobs = highest_job_num
         }
     }
-
-    fmt.Println("post queue load indexes", indexes)
 }

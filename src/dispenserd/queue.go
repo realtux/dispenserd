@@ -78,7 +78,7 @@ func InitJobTemplate() job {
 }
 
 func InsertJob(job job) {
-op_start := time.Now()
+//op_start := time.Now()
     mu.Lock()
 
     // get the queue index where this lane is stored
@@ -150,7 +150,7 @@ op_start := time.Now()
     }
 
     mu.Unlock()
-fmt.Println("mutex on, insertion took:", time.Since(op_start))
+//fmt.Println("mutex on, insertion took:", time.Since(op_start))
 }
 
 func LaneIndex(search_lane string) int {
