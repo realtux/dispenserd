@@ -17,7 +17,7 @@ class TestDispenserd(unittest.TestCase):
         res = requests.get(self.base_url + '/jobs')
         json = res.json()
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(len(json[0]), 0)
+        self.assertEqual(len(json['main']), 0)
 
     def test030_queue_fills(self):
         for i in range(0, 100):
@@ -32,14 +32,14 @@ class TestDispenserd(unittest.TestCase):
         res = requests.get(self.base_url + '/jobs')
         json = res.json()
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(len(json[0]), 100)
+        self.assertEqual(len(json['main']), 100)
 
     def test032_queue_properly_ordered(self):
         res = requests.get(self.base_url + '/jobs')
         json = res.json()
         previous_priority = -1
         previous_date = ''
-        for job in json[0]:
+        for job in json['main']:
             self.assertLessEqual(previous_priority, job['priority'])
             if previous_priority == job['priority']:
                 self.assertLessEqual(previous_date, job['timestamp'])
@@ -48,7 +48,7 @@ class TestDispenserd(unittest.TestCase):
 
     def test033_queue_drains(self):
         for i in range(0, 100):
-            res = requests.post(self.base_url + '/receive_block')
+            res = requests.post(self.base_url + '/receive_noblock')
             text = res.text
             self.assertEqual(res.status_code, 200)
             self.assertEqual(text.startswith('job #'), True)
@@ -57,7 +57,7 @@ class TestDispenserd(unittest.TestCase):
         res = requests.get(self.base_url + '/jobs')
         json = res.json()
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(len(json[0]), 0)
+        self.assertEqual(len(json['main']), 0)
 
 
 

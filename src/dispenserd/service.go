@@ -8,6 +8,7 @@ import (
     "time"
 )
 
+var listeners = map[string]chan int{"main": make(chan int)}
 var ready = make(chan int)
 
 type generic_payload struct {
@@ -31,8 +32,8 @@ func ServiceStatus(res http.ResponseWriter, req *http.Request) {
 
     type payload struct {
         System     system         `json:"system"`
-        Stats      stats          `json:"stats"`
         QueuedJobs map[string]int `json:"queued_jobs"`
+        IdleWorkers map[string]uint `json:"idle_workers"`
     }
 
     type info struct {
@@ -43,10 +44,16 @@ func ServiceStatus(res http.ResponseWriter, req *http.Request) {
         Payload   payload `json:"payload"`
     }
 
-    lane_stats := make(map[string]int)
+    qj := make(map[string]int)
 
-    for k, v := range lanes {
-        lane_stats[v] = len(queue[k])
+    for k, v := range queue {
+        qj[k] = len(v)
+    }
+
+    iw := make(map[string]uint)
+
+    for k, _ := range idle_workers {
+        iw[k] = idle_workers[k]
     }
 
     response := info{
@@ -55,10 +62,8 @@ func ServiceStatus(res http.ResponseWriter, req *http.Request) {
         Timestamp: time.Now().Format(time.RFC3339),
         Status:    STATUS_OK,
         Payload: payload{
-            QueuedJobs: lane_stats,
-            Stats: stats{
-                IdleWorkers: idle_workers,
-            },
+            QueuedJobs: qj,
+            IdleWorkers: iw,
             System: system{
                 Pid:      os.Getpid(),
                 CPUCount: runtime.NumCPU(),
@@ -139,7 +144,7 @@ func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
         time.Sleep(time.Duration(CONFIG_DEFAULT_THROTTLE_MS) * time.Millisecond)
     }
 
-    var current_lane int
+    var current_lane string
 
     send_job := func() {
         // take the next job off the front
@@ -175,32 +180,35 @@ func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
     incoming_data := json.NewDecoder(req.Body)
     incoming_data.Decode(&incoming_request)
 
+    var current_lane_name = *incoming_request.Lane
+
     if incoming_request.Lane == nil {
-        current_lane = 0
+        current_lane = "main"
     } else {
-        current_lane = LaneIndex(*incoming_request.Lane)
+        CreateIndex(current_lane_name)
+        current_lane = current_lane_name
     }
 
     if len(queue[current_lane]) == 0 {
-        idle_workers += 1
+        idle_workers[current_lane_name] += 1
         mu.Unlock()
 
         cn, _ := res.(http.CloseNotifier)
 
         for {
             select {
-            case <-ready:
+            case <-listeners[current_lane_name]:
                 mu.Lock()
                 if len(queue[current_lane]) == 0 {
                     mu.Unlock()
                     continue
                 }
-                idle_workers -= 1
+                idle_workers[current_lane_name] -= 1
                 send_job()
                 return
             case <-cn.CloseNotify():
                 mu.Lock()
-                idle_workers -= 1
+                idle_workers[current_lane_name] -= 1
                 mu.Unlock()
 
                 return
@@ -213,7 +221,7 @@ func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
 }
 
 func ServiceReceiveNoBlock(res http.ResponseWriter, req *http.Request) {
-    var current_lane int
+    var current_lane string
 
     type request struct {
         Lane *string `json:"lane"`
@@ -227,9 +235,10 @@ func ServiceReceiveNoBlock(res http.ResponseWriter, req *http.Request) {
     incoming_data.Decode(&incoming_request)
 
     if incoming_request.Lane == nil {
-        current_lane = 0
+        current_lane = "main"
     } else {
-        current_lane = LaneIndex(*incoming_request.Lane)
+        CreateIndex(*incoming_request.Lane)
+        current_lane = *incoming_request.Lane
     }
 
     mu.Lock()

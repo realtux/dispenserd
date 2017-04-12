@@ -7,7 +7,6 @@ import (
     "os"
 )
 
-// config
 type options struct {
     Address          string `json:"addr"`
     PersistQueue     bool   `json:"persist_queue"`
@@ -16,19 +15,17 @@ type options struct {
     ThrottleSchedule bool   `json:"throttle_schedule"`
 }
 
-func init_options() options {
-    return options{
+var config options
+
+func ConfigLoad() {
+    config = options{
         Address:          "127.0.0.1:8282",
         PersistQueue:     false,
         PersistInterval:  60,
         ThrottleReceive:  false,
         ThrottleSchedule: false,
     }
-}
 
-var config = init_options()
-
-func ConfigLoad() {
     // read config
     data, err := ioutil.ReadFile(ROOT + "/config/config.json")
 

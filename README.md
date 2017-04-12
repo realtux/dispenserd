@@ -117,9 +117,6 @@ empty
             "pid": 12345,
             "cpu_count": 32
         },
-        "stats": {
-            "idle_workers": 0
-        },
         "lanes": {
             "main": {
                 "queued_jobs": 0

@@ -10,12 +10,12 @@ import (
     "syscall"
 )
 
-var mu = &sync.Mutex{}
 var ROOT string
 
+var mu = &sync.Mutex{}
 var running = true
 
-func cleanup() {
+func Cleanup() {
     running = false
 
     fmt.Println("cleaning up...")
@@ -36,9 +36,6 @@ func main() {
 
     runtime.GOMAXPROCS(runtime.NumCPU())
 
-    // set the main queue
-    queue = append(queue, job_set{})
-
     // init config
     ConfigLoad()
 
@@ -47,7 +44,7 @@ func main() {
     signal.Notify(c, os.Interrupt, syscall.SIGTERM)
     go func() {
         <-c
-        cleanup()
+        Cleanup()
         os.Exit(1)
     }()
 
