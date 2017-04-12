@@ -1,12 +1,12 @@
 # dispenserd [![Build Status](https://travis-ci.org/ebrian/dispenserd.svg?branch=master)](https://travis-ci.org/ebrian/dispenserd)
-Modern Job Queue for Modern Developers
+Yet Another Job Queue, But Better
 
-dispenserd is a modern job queue designed to be: fast, reliable, feature rich, and tailored towards the needs of developers.
+dispenserd is a job queue designed to be: fast, reliable, feature rich, and tailored towards the needs of developers.
 
 ### Primary Features
 - No compromise on stability or reliability
 - Simple JSON interface
-- Queue fully in memory with optional persistence
+- Full queue in memory with optional persistence
 - Blocking Operation (receive a job immediately or block until ready)
 - Non-blocking Operation (receive a job immediately or be notified none are available)
 - Job priorities
@@ -110,17 +110,18 @@ empty
 {
     "name": "dispenserd",
     "version": "x.x.x",
-    "timestamp": "2017-02-05T23:42:51-06:00",
+    "timestamp": "2017-03-14T15:42:51-06:00",
     "status": "ok",
     "payload": {
         "system": {
             "pid": 12345,
             "cpu_count": 32
         },
-        "lanes": {
-            "main": {
-                "queued_jobs": 0
-            }
+        "queued_jobs": {
+            "main": 0
+        },
+        "idle_workers": {
+            "main": 0
         }
     }
 }
@@ -137,22 +138,22 @@ empty
 ```
 ##### Response Body (single lane, queue empty)
 ```json
-[
-    []
-]
+{
+    "main": []
+}
 ```
 ##### Response Body (multiple lanes, all queues empty)
 ```json
-[
-    [],
-    [],
-    []
-]
+{
+    "main": [],
+    "other_lane": [],
+    "other_lane2": []
+}
 ```
 ##### Response Body (queue not empty)
 ```json
-[
-    [
+{
+    "main": [
         {
             "job_num": 1,
             "hash": "5066400f81e3ba8e6160279b4fad9d6ed5598584",
@@ -161,7 +162,7 @@ empty
             "message": "job message here"
         }
     ]
-]
+}
 ```
 
 ### Schedule Job: `/schedule`
