@@ -44,6 +44,8 @@ func ServiceStatus(res http.ResponseWriter, req *http.Request) {
         Payload   payload `json:"payload"`
     }
 
+    mu.Lock()
+
     qj := make(map[string]int)
 
     for k, v := range queue {
@@ -55,6 +57,8 @@ func ServiceStatus(res http.ResponseWriter, req *http.Request) {
     for k, _ := range idle_workers {
         iw[k] = idle_workers[k]
     }
+
+    mu.Unlock()
 
     response := info{
         Name:      NAME,
@@ -197,6 +201,7 @@ func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
 
     if len(queue[current_lane]) == 0 {
         idle_workers[current_lane] += 1
+
         mu.Unlock()
 
         cn, _ := res.(http.CloseNotifier)
@@ -204,7 +209,6 @@ func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
         for {
             select {
             case <-listeners[current_lane]:
-                mu.Lock()
                 if len(queue[current_lane]) == 0 {
                     mu.Unlock()
                     continue

@@ -8,7 +8,7 @@ import (
 )
 
 type options struct {
-    Address          string `json:"addr"`
+    Address          string `json:"address"`
     PersistQueue     bool   `json:"persist_queue"`
     PersistInterval  int    `json:"persist_interval"`
     ThrottleReceive  bool   `json:"throttle_receive"`

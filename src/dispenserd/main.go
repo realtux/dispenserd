@@ -12,7 +12,7 @@ import (
 
 var ROOT string
 
-var mu = &sync.Mutex{}
+var mu sync.Mutex
 var running = true
 
 func Cleanup() {

@@ -133,9 +133,9 @@ func InsertJob(job job) {
 
     if idle_workers[lane] > 0 {
         listeners[lane] <- 1
+    } else {
+        mu.Unlock()
     }
-
-    mu.Unlock()
 //fmt.Println("mutex on, insertion took:", time.Since(op_start))
 }
 
