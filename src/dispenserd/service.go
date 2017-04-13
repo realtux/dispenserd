@@ -54,8 +54,8 @@ func ServiceStatus(res http.ResponseWriter, req *http.Request) {
 
     iw := make(map[string]uint)
 
-    for k, _ := range idle_workers {
-        iw[k] = idle_workers[k]
+    for k, v := range idle_workers {
+        iw[k] = v
     }
 
     mu.Unlock()
