@@ -31,8 +31,8 @@ func ServiceStatus(res http.ResponseWriter, req *http.Request) {
     }
 
     type payload struct {
-        System     system         `json:"system"`
-        QueuedJobs map[string]int `json:"queued_jobs"`
+        System      system          `json:"system"`
+        QueuedJobs  map[string]int  `json:"queued_jobs"`
         IdleWorkers map[string]uint `json:"idle_workers"`
     }
 
@@ -62,7 +62,7 @@ func ServiceStatus(res http.ResponseWriter, req *http.Request) {
         Timestamp: time.Now().Format(time.RFC3339),
         Status:    STATUS_OK,
         Payload: payload{
-            QueuedJobs: qj,
+            QueuedJobs:  qj,
             IdleWorkers: iw,
             System: system{
                 Pid:      os.Getpid(),
@@ -164,9 +164,17 @@ func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
 
         mu.Unlock()
 
-        res.Header().Set("Content-Type", "text/plain")
+        payload := generic_payload{
+            Status:  STATUS_OK,
+            Code:    CODE_SUCCESS,
+            Message: *next_job.Message,
+        }
+
+        json_response, _ := json.MarshalIndent(payload, "", "  ")
+
+        res.Header().Set("Content-Type", "application/json")
         res.WriteHeader(http.StatusOK)
-        res.Write([]byte(*next_job.Message))
+        res.Write(json_response)
     }
 
     type request struct {
@@ -249,7 +257,7 @@ func ServiceReceiveNoBlock(res http.ResponseWriter, req *http.Request) {
         // nothing in queue means return immediately
         payload := generic_payload{
             Status:  STATUS_OK,
-            Code:    CODE_SUCCESS,
+            Code:    CODE_NO_DATA_AVAILABLE,
             Message: "empty queue",
         }
 
@@ -278,7 +286,15 @@ func ServiceReceiveNoBlock(res http.ResponseWriter, req *http.Request) {
 
     mu.Unlock()
 
-    res.Header().Set("Content-Type", "text/plain")
+    payload := generic_payload{
+        Status:  STATUS_OK,
+        Code:    CODE_SUCCESS,
+        Message: *next_job.Message,
+    }
+
+    json_response, _ := json.MarshalIndent(payload, "", "  ")
+
+    res.Header().Set("Content-Type", "application/json")
     res.WriteHeader(http.StatusOK)
-    res.Write([]byte(*next_job.Message))
+    res.Write(json_response)
 }

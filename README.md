@@ -176,14 +176,14 @@ Optional Request Parameters:
 ##### Request Body (main lane)
 ```json
 {
-    "priority": 1,
+    "priority": 0,
     "message": "msg here. stringified json, serialized objects, etc..."
 }
 ```
 ##### Request Body (specific lane)
 ```json
 {
-    "priority": 1,
+    "priority": 0,
     "lane": "video",
     "message": "msg here. stringified json, serialized objects, etc..."
 }
@@ -226,7 +226,11 @@ since this is a blocking response, the request will simply hang until a job is r
 ```
 ##### Response Body (job ready)
 ```json
-plain text job
+{
+    "status": "ok",
+    "code": 0,
+    "message": "message from your job"
+}
 ```
 
 ### Receive Job (non-blocking): `/receive_noblock`
@@ -249,13 +253,17 @@ empty
 ```json
 {
     "status": "ok",
-    "code": 0,
+    "code": 2,
     "message": "empty queue"
 }
 ```
 ##### Response Body (job ready)
 ```json
-plain text job
+{
+    "status": "ok",
+    "code": 0,
+    "message": "message from your job"
+}
 ```
 
 ---
