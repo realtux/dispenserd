@@ -2,6 +2,7 @@ import unittest
 import requests
 import sys
 import random
+import json
 
 class TestDispenserd(unittest.TestCase):
 
@@ -49,9 +50,9 @@ class TestDispenserd(unittest.TestCase):
     def test033_queue_drains(self):
         for i in range(0, 100):
             res = requests.post(self.base_url + '/receive_noblock')
-            text = res.text
+            json = res.json()
             self.assertEqual(res.status_code, 200)
-            self.assertEqual(text.startswith('job #'), True)
+            self.assertEqual(json['message'].startswith('job #'), True)
 
     def test034_queue_empty(self):
         res = requests.get(self.base_url + '/jobs')
