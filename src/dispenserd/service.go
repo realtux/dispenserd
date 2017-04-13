@@ -188,13 +188,11 @@ func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
     incoming_data := json.NewDecoder(req.Body)
     incoming_data.Decode(&incoming_request)
 
-    var current_lane_name = *incoming_request.Lane
-
     if incoming_request.Lane == nil {
         current_lane = "main"
     } else {
-        CreateIndex(current_lane_name)
-        current_lane = current_lane_name
+        CreateIndex(*incoming_request.Lane)
+        current_lane = *incoming_request.Lane
     }
 
     if len(queue[current_lane]) == 0 {
