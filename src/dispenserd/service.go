@@ -196,25 +196,25 @@ func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
     }
 
     if len(queue[current_lane]) == 0 {
-        idle_workers[current_lane_name] += 1
+        idle_workers[current_lane] += 1
         mu.Unlock()
 
         cn, _ := res.(http.CloseNotifier)
 
         for {
             select {
-            case <-listeners[current_lane_name]:
+            case <-listeners[current_lane]:
                 mu.Lock()
                 if len(queue[current_lane]) == 0 {
                     mu.Unlock()
                     continue
                 }
-                idle_workers[current_lane_name] -= 1
+                idle_workers[current_lane] -= 1
                 send_job()
                 return
             case <-cn.CloseNotify():
                 mu.Lock()
-                idle_workers[current_lane_name] -= 1
+                idle_workers[current_lane] -= 1
                 mu.Unlock()
 
                 return
