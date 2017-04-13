@@ -111,7 +111,7 @@ func ServiceSchedule(res http.ResponseWriter, req *http.Request) {
         final_job.Priority = incoming_job.Priority
     }
 
-    if incoming_job.Lane != nil {
+    if incoming_job.Lane != nil && *incoming_job.Lane != "" {
         final_job.Lane = incoming_job.Lane
     }
 
@@ -192,7 +192,7 @@ func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
     incoming_data := json.NewDecoder(req.Body)
     incoming_data.Decode(&incoming_request)
 
-    if incoming_request.Lane == nil {
+    if incoming_request.Lane == nil || *incoming_request.Lane == "" {
         current_lane = "main"
     } else {
         CreateIndex(*incoming_request.Lane)
@@ -244,7 +244,7 @@ func ServiceReceiveNoBlock(res http.ResponseWriter, req *http.Request) {
     incoming_data := json.NewDecoder(req.Body)
     incoming_data.Decode(&incoming_request)
 
-    if incoming_request.Lane == nil {
+    if incoming_request.Lane == nil || *incoming_request.Lane == "" {
         current_lane = "main"
     } else {
         CreateIndex(*incoming_request.Lane)

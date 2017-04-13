@@ -19,9 +19,9 @@ var config options
 
 func ConfigLoad() {
     config = options{
-        Address:          "127.0.0.1:8282",
-        PersistQueue:     false,
-        PersistInterval:  60,
+        Address:          "0.0.0.0:8282",
+        PersistQueue:     true,
+        PersistInterval:  3600,
         ThrottleReceive:  false,
         ThrottleSchedule: false,
     }
