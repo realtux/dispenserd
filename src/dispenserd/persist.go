@@ -2,18 +2,20 @@ package main
 
 import (
     "encoding/json"
-    //"fmt"
+    "fmt"
     "io/ioutil"
     "time"
 )
 
 func WriteQueue() {
-//op_start := time.Now()
+    op_start := time.Now()
+
     mu.Lock()
     json_queue, _ := json.MarshalIndent(queue, "", "  ")
     ioutil.WriteFile(ROOT+"/data/queue.json", json_queue, 0644)
     mu.Unlock()
-//fmt.Println("queue persist took:", time.Since(op_start))
+
+    fmt.Println("queue persist took:", time.Since(op_start))
 }
 
 func Persist() {

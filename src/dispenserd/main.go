@@ -18,7 +18,7 @@ var running = true
 func Cleanup() {
     running = false
 
-    fmt.Println("cleaning up...")
+    fmt.Println("shutting down...")
 
     if config.PersistQueue {
         fmt.Println("queue persistence enabled, saving queue...")

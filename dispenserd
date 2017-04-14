@@ -2,9 +2,8 @@
 
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-VERSION="0.0.1"
+VERSION=$(cat $ROOT/src/dispenserd/constants.go | grep VERSION | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
 
-echo
 echo "dispenserd version $VERSION"
 
 if [[ ! -f $ROOT/bin/dispenserd ]]; then
@@ -12,7 +11,7 @@ if [[ ! -f $ROOT/bin/dispenserd ]]; then
 else
     if [[ $* == *-d* ]]; then
         echo 'starting dispenserd in background...'
-        ROOT=$ROOT nohup $ROOT/bin/dispenserd > /dev/null 2>&1 &
+        ROOT=$ROOT nohup $ROOT/bin/dispenserd >> $ROOT/logs/dispenserd.log 2>&1 &
     else
         echo 'starting dispenserd in foreground...'
         ROOT=$ROOT $ROOT/bin/dispenserd

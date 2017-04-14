@@ -2,9 +2,8 @@
 
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-VERSION="0.0.1"
+VERSION=$(cat $ROOT/src/dispenserd/constants.go | grep VERSION | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')
 
-echo
 echo "dispenserd version $VERSION"
 echo 'building dispenserd...'
 
