@@ -59,21 +59,21 @@ coming soon
 
 ### Configuration
 
-You can specify a configuration file located at `$ROOT/config/queue.json` if you'd like, but it's completely optional. The config file that comes with the source represents all of the default values. dispenserd will run just fine with no modifications or no config file at all.
+You can specify a configuration file located at `$ROOT/data/queue.json` if you'd like, but it's completely optional. The config file that comes with the source represents all of the default values. dispenserd will run just fine with no modifications or no config file at all.
 
 #### address (0-255,0-255,0-255,0-255:1-65536), default: 0.0.0.0:8282
 Set this to the address you'd like dispenserd to bind to.
 
 #### persist_queue [true/false], default: true
 Setting `persist_queue` to true will cause the following three things to happen over the course of dispenserd running:
- 1. Upon start-up, dispenserd will look for `$ROOT/config/queue.json`. If present, it will attempt to parse that file and load the jobs into the queue.
- 2.  Periodically during program execution, every `persist_interval` seconds, dispenserd will write the contents of the queue to `$ROOT/config/queue.json`.
- 3.  Upon receiving a SIGTERM, dispenserd will write the contents of the queue to `$ROOT/config/queue.json`.
+ 1. Upon start-up, dispenserd will look for `$ROOT/data/queue.json`. If present, it will attempt to parse that file and load the jobs into the queue.
+ 2.  Periodically during program execution, every `persist_interval` seconds, dispenserd will write the contents of the queue to `$ROOT/data/queue.json`.
+ 3.  Upon receiving a SIGTERM, dispenserd will write the contents of the queue to `$ROOT/data/queue.json`.
 
 #### persist_interval [0-2147483647], default: 3600
-If `persist_queue` is set to true, `persist_interval` will be used by dispenserd to determine how often to write the contents of the queue to `$ROOT/config/queue.json`. A value of `0` will tell dispenserd to never persist the queue during program execution and only persist the queue when a SIGTERM is received.
+If `persist_queue` is set to true, `persist_interval` will be used by dispenserd to determine how often to write the contents of the queue to `$ROOT/data/queue.json`. A value of `0` will tell dispenserd to never persist the queue during program execution and only persist the queue when a SIGTERM is received.
 
-If for some reason your use case involves queues that are abnormally large (perhaps > 2,000,000 pending jobs), the size of `$ROOT/config/queue.json` could be quite large and take time to write to disk, depending on your hardware. Unless your server infrastructure is prone to abrupt power loss, it's probably safe to leave this at the default value.
+If for some reason your use case involves queues that are abnormally large (perhaps > 2,000,000 pending jobs), the size of `$ROOT/data/queue.json` could be quite large and take time to write to disk, depending on your hardware. Unless your server infrastructure is prone to abrupt power loss, it's probably safe to leave this at the default value.
 
 #### throttle_receive [true/false], default: false
 If `throttle_receive` is set to true, a `25ms` delay will be enforced between consuming jobs via `/receive_block`. This effectively limits receive operations to 40/sec max.

@@ -11,7 +11,7 @@ func WriteQueue() {
 //op_start := time.Now()
     mu.Lock()
     json_queue, _ := json.MarshalIndent(queue, "", "  ")
-    ioutil.WriteFile(ROOT+"/config/queue.json", json_queue, 0644)
+    ioutil.WriteFile(ROOT+"/data/queue.json", json_queue, 0644)
     mu.Unlock()
 //fmt.Println("queue persist took:", time.Since(op_start))
 }
@@ -32,7 +32,7 @@ func Persist() {
 
 func LoadQueue() {
     // load in the queue
-    json_queue, err := ioutil.ReadFile(ROOT + "/config/queue.json")
+    json_queue, err := ioutil.ReadFile(ROOT + "/data/queue.json")
 
     var tmp_queue = map[string]job_set{}
 

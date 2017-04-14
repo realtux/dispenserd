@@ -5,4 +5,4 @@
 !/logs/.gitkeep
 /pkg/*
 !/pkg/.gitkeep
-/config/queue.json
+/data/queue.json

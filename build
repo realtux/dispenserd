@@ -11,7 +11,7 @@ echo 'building dispenserd...'
 GOPATH=$ROOT go build -o $ROOT/bin/dispenserd dispenserd
 
 if [[ $? == 0 ]]; then
-    touch $ROOT/config/queue.json
+    touch $ROOT/data/queue.json
     touch $ROOT/logs/dispenserd.log
 
     echo 'dispenser built!'

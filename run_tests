@@ -4,7 +4,7 @@
 ./build
 
 # zero out queue
-echo '' > config/queue.json
+echo '' > data/queue.json
 
 # start dispenserd in the background
 ./dispenserd -d
