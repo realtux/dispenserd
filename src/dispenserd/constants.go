@@ -2,7 +2,7 @@ package main
 
 const (
     NAME    = "dispenserd"
-    VERSION = "0.0.2"
+    VERSION = "0.0.3"
 
     STATUS_OK    = "ok"
     STATUS_ERROR = "error"
