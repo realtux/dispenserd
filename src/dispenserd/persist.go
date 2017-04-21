@@ -74,6 +74,8 @@ func LoadQueue() {
 
                 if !ok {
                     indexes[current_lane] = make(map[uint]uint64)
+                    listeners[current_lane] = make(chan int)
+                    idle_workers[current_lane] = 0
                 }
             }
 
