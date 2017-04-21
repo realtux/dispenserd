@@ -9,7 +9,6 @@ import (
 )
 
 var listeners = map[string]chan int{"main": make(chan int)}
-var ready = make(chan int)
 
 type generic_payload struct {
     Status  string `json:"status"`
@@ -209,16 +208,24 @@ func ServiceReceiveBlock(res http.ResponseWriter, req *http.Request) {
         for {
             select {
             case <-listeners[current_lane]:
-                if len(queue[current_lane]) == 0 {
+                mu.Lock()
+
+                // empty queue or no workers means do nothing
+                if len(queue[current_lane]) == 0 || idle_workers[current_lane] == 0 {
                     mu.Unlock()
                     continue
                 }
+
                 idle_workers[current_lane] -= 1
+
                 send_job()
+
                 return
             case <-cn.CloseNotify():
                 mu.Lock()
-                idle_workers[current_lane] -= 1
+                if idle_workers[current_lane] > 0 {
+                    idle_workers[current_lane] -= 1
+                }
                 mu.Unlock()
 
                 return

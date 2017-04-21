@@ -132,6 +132,7 @@ func InsertJob(job job) {
     }
 
     if idle_workers[lane] > 0 {
+        mu.Unlock()
         listeners[lane] <- 1
     } else {
         mu.Unlock()
