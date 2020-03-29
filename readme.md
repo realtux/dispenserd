@@ -1,4 +1,4 @@
-# dispenserd [![Build Status](https://travis-ci.org/ebrian/dispenserd.svg?branch=master)](https://travis-ci.org/ebrian/dispenserd)
+# dispenserd [![Build Status](https://travis-ci.org/realtux/dispenserd.svg?branch=master)](https://travis-ci.org/realtux/dispenserd)
 Yet Another Job Queue, But Better
 
 dispenserd is a job queue designed to be: fast, reliable, feature rich, and tailored towards the needs of developers.
@@ -50,7 +50,7 @@ coming soon
 coming soon
 ```
 
-##### Optionally run tests (Python 2.7 required)
+##### Optionally run tests (Python 3+ required)
 ```bash
 ./run_tests
 ```
