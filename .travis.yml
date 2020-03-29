@@ -5,6 +5,6 @@ go:
     - 1.8.x
 sudo: required
 install:
-    - sudo pip install requests
+    - sudo pip3 install requests
 script:
     - ./run_tests

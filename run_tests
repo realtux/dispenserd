@@ -17,7 +17,7 @@ sleep 1
 # start tests here
 echo ''
 echo 'starting tests...'
-python tests/test.py
+python3 tests/test.py
 test_status=$(echo $?)
 
 # kill dispenserd
